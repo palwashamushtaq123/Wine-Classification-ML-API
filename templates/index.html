@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wine Classification</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}">
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+
+        <h1>🍷 Wine Classification System</h1>
+
+        <p>
+            AI Powered Wine Prediction using Machine Learning
+        </p>
+
+    </div>
+
+    <div class="info-box">
+
+        <div class="card">
+            <h3>Model Accuracy</h3>
+            <p>{{ model_accuracy }}</p>
+        </div>
+
+        <div class="card">
+            <h3>Version</h3>
+            <p>{{ model_version.version }}</p>
+        </div>
+
+    </div>
+
+<form id="predictionForm">
+
+<div class="grid">
+
+<input type="number" step="any" placeholder="Alcohol" id="alcohol" required>
+
+<input type="number" step="any" placeholder="Malic Acid" id="malic_acid" required>
+
+<input type="number" step="any" placeholder="Ash" id="ash" required>
+
+<input type="number" step="any" placeholder="Alcalinity of Ash" id="alcalinity_of_ash" required>
+
+<input type="number" step="1" placeholder="Magnesium" id="magnesium" required>
+
+<input type="number" step="any" placeholder="Total Phenols" id="total_phenols" required>
+
+<input type="number" step="any" placeholder="Flavanoids" id="flavanoids" required>
+
+<input type="number" step="any" placeholder="Nonflavanoid Phenols" id="nonflavanoid_phenols" required>
+
+<input type="number" step="any" placeholder="Proanthocyanins" id="proanthocyanins" required>
+
+<input type="number" step="any" placeholder="Color Intensity" id="color_intensity" required>
+
+<input type="number" step="any" placeholder="Hue" id="hue" required>
+
+<input type="number" step="any" placeholder="Diluted Wines" id="diluted_wines" required>
+
+<input type="number" step="1" placeholder="Proline" id="proline" required>
+
+</div>
+
+<button type="submit">
+
+Predict Wine Class
+
+</button>
+
+</form>
+
+<div id="result" class="result"></div>
+
+</div>
+
+<script>
+
+document.getElementById("predictionForm").addEventListener("submit", async function(e){
+
+e.preventDefault();
+
+const data={
+
+alcohol:parseFloat(alcohol.value),
+
+malic_acid:parseFloat(malic_acid.value),
+
+ash:parseFloat(ash.value),
+
+alcalinity_of_ash:parseFloat(alcalinity_of_ash.value),
+
+magnesium:parseInt(magnesium.value),
+
+total_phenols:parseFloat(total_phenols.value),
+
+flavanoids:parseFloat(flavanoids.value),
+
+nonflavanoid_phenols:parseFloat(nonflavanoid_phenols.value),
+
+proanthocyanins:parseFloat(proanthocyanins.value),
+
+color_intensity:parseFloat(color_intensity.value),
+
+hue:parseFloat(hue.value),
+
+diluted_wines:parseFloat(diluted_wines.value),
+
+proline:parseInt(proline.value)
+
+};
+
+const response=await fetch("/predict",{
+
+method:"POST",
+
+headers:{
+
+"Content-Type":"application/json"
+
+},
+
+body:JSON.stringify(data)
+
+});
+
+const result=await response.json();
+
+document.getElementById("result").innerHTML=`
+
+<h2>Prediction Result</h2>
+
+<h3>${result.predicted_label}</h3>
+
+<p><strong>Confidence:</strong> ${result.confidence}%</p>
+
+`;
+
+});
+
+</script>
+
+</body>
+</html>
