@@ -1,50 +1,48 @@
-from pathlib import Path #Handle Files aur folders's paths.
+from pathlib import Path 
 
-import joblib #save tained Ml models
+import joblib 
 import numpy as np 
-from fastapi import FastAPI, HTTPException, Request #use to make web application,HTTPException use to send error,
-from fastapi.responses import HTMLResponse #Browser ko HTML page bhejna.Agar ye na ho to browser JSON show karega.
-from fastapi.staticfiles import StaticFiles #save css,Images,JavaScript
-from fastapi.templating import Jinja2Templates # to render HTML template,and send python variable in html
-from pydantic import BaseModel, Field #pydantic use to validate user input either user write right or wrong
+from fastapi import FastAPI, HTTPException, Request 
+from fastapi.responses import HTMLResponse 
+from fastapi.staticfiles import StaticFiles 
+from fastapi.templating import Jinja2Templates 
+from pydantic import BaseModel, Field 
 
-BASE_DIR = Path(__file__).resolve().parent #it is current floder project address
+BASE_DIR = Path(__file__).resolve().parent 
 print(f'BASE DIR:{BASE_DIR}')
 model_path = BASE_DIR/'model.pkl' 
 
 if not model_path.exists():
     raise RuntimeError("model.pkl was not found.Run 'python train.ipynb' first.")
 
-model_bundle = joblib.load(model_path) # it open saved model.pkl
-model = model_bundle['model'] #getout ml model
-target_names = model_bundle['target_names'] #get lable here target lables are setosa,..
-accuracy = model_bundle['accuracy'] #get model save training accurary
-version = model_bundle['version'] # get model version
+model_bundle = joblib.load(model_path) 
+model = model_bundle['model'] 
+target_names = model_bundle['target_names'] 
+accuracy = model_bundle['accuracy'] 
+version = model_bundle['version'] 
 
 print(type(model_bundle["accuracy"]))
 print(model_bundle["accuracy"])
 
-#application create => app = FastAPI()
 app = FastAPI(
-    title= 'Wine Classification Web App', #create aplication title
-    version = model_bundle['version'], #show saved version
+    title= 'Wine Classification Web App', 
+    version = model_bundle['version'], 
 )
 
-#This step do to make accessible Css, Java Script
 app.mount(
     '/static',
     StaticFiles(directory=BASE_DIR/'static'),
     name= 'static',
 )
 
-# This tells HTML files kis folder mein hain => templates = Jinja2Templates(...) 
+
 templates = Jinja2Templates(directory= BASE_DIR/'templates')
 
-# This APL input structure. user have to give 4 input values
+
 class WineInput(BaseModel):
-    alcohol: float = Field(gt=0) # gt=0 means greater than 0.
-    malic_acid: float = Field(gt=0) #Agar user 0 ya negative number 
-    ash: float = Field(gt=0) #dega to FastAPI validation error return karega.
+    alcohol: float = Field(gt=0) 
+    malic_acid: float = Field(gt=0) 
+    ash: float = Field(gt=0) 
     alcalinity_of_ash: float = Field(gt=0)
     magnesium: int = Field(gt=0)
     total_phenols: float = Field(gt=0)
@@ -56,9 +54,7 @@ class WineInput(BaseModel):
     diluted_wines: float = Field(gt=0)
     proline: int = Field(gt=0)
 
-#Jab browser kholta hai: to y funcation run hota hi throught this  => http://127.0.0.1:8000
-# => templates.TemplateResponse(...) Ye index.html browser ko bhejta hai.
-# Saath hi context ke through data bhi bhejta hai:
+
 @app.get('/',response_class=HTMLResponse)
 def home(request: Request):
     return templates.TemplateResponse(
@@ -69,9 +65,7 @@ def home(request: Request):
             'model_accuracy': f"{model_bundle['accuracy'] * 100:.1f}%",
         }
     )
-# this step run when we check our API without css,html 
-# one get('/') or can say this home function will use 
-#if we use in css and hlml we must have unactive it. double home wont work
+
 # @app.get('/')
 # def home():
 #     return{
@@ -80,7 +74,6 @@ def home(request: Request):
 #         "model_accuracy": f"{model_bundle['accuracy'] * 100:.1f}%",
 #     }
 
-#e check karta hai ke API aur model sahi chal rahe hain ya nahi.
 @app.get('/health')
 def health():
     return{
@@ -91,11 +84,11 @@ def health():
 
 #Endpoint(Get< post)
 
-@app.post('/predict') # this main endpoint of the project
+@app.post('/predict') 
 def predict(data: WineInput):
-    features = np.array([ #Model ko input 2D array mein diya jata hai.
+    features = np.array([ 
         [
-            data.alcohol, #Outer [] = samples, Inner [] = features
+            data.alcohol, 
             data.malic_acid,
             data.ash,
             data.alcalinity_of_ash,
@@ -111,9 +104,9 @@ def predict(data: WineInput):
         ]
     ])
     
-    predicted_class = int(model.predict(features)[0])  # Model prediction karta hai.
-    probabilities = model.predict_proba(features)[0] #ye har class ki probability return karta hai.
-    confidence = float(probabilities[predicted_class]) #Predicted class ki probability nikalta hai.
+    predicted_class = int(model.predict(features)[0]) 
+    probabilities = model.predict_proba(features)[0] 
+    confidence = float(probabilities[predicted_class]) 
 
     return{
             'predicted_class': predicted_class,
@@ -121,9 +114,3 @@ def predict(data: WineInput):
             'confidence': round(confidence *100,2),
             'model_version': model_bundle['version'],
 }
-
-
-
-
-
-#predict(WineInput(sepal_length=5.1, sepal_width=3.5, petal_length=1.4, petal_width=0.2))
