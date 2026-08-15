@@ -82,16 +82,18 @@ Target Classes:
 ```
 Wine-Classification-FastAPI
 │
-├── model.pkl
-├── main.py
-├── requirements.txt
-├── README.md
-│
 ├── templates
 │   └── index.html
 │
 ├── static
 │   └── style.css
+│
+├── .gitignore
+├── Demo Video Wine
+├── README.md
+├── main.py
+├── model.pkl
+├── requirements.txt
 │
 └── train.ipynb
 ```
