@@ -3,144 +3,532 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wine Classification</title>
+
+    <title>Wine Classification | ML Prediction</title>
 
     <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}">
 </head>
 
 <body>
 
-<div class="container">
+    <div class="page">
 
-    <div class="header">
+        <!-- Header -->
+        <header class="header">
+            <div class="brand">
+                <div class="logo">🍷</div>
+                <div>
+                    <h1>Wine Classification</h1>
+                    <p>Machine Learning Prediction System</p>
+                </div>
+            </div>
 
-        <h1>🍷 Wine Classification System</h1>
+            <div class="model-badge">
+                <span>●</span> Model v{{ model_version }}
+            </div>
+        </header>
 
-        <p>
-            AI Powered Wine Prediction using Machine Learning
-        </p>
+
+        <!-- Main Content -->
+        <main class="main-container">
+
+            <!-- Left Information Card -->
+            <section class="info-card">
+
+                <div class="wine-icon">🍇</div>
+
+                <h2>Wine Quality Analysis</h2>
+
+                <p>
+                    Enter the chemical properties of a wine sample
+                    to predict its classification using a trained
+                    Machine Learning model.
+                </p>
+
+                <div class="stats">
+
+                    <div class="stat-box">
+                        <span class="stat-number">{{ model_accuracy }}</span>
+                        <span class="stat-label">Model Accuracy</span>
+                    </div>
+
+                    <div class="stat-box">
+                        <span class="stat-number">13</span>
+                        <span class="stat-label">Features</span>
+                    </div>
+
+                    <div class="stat-box">
+                        <span class="stat-number">3</span>
+                        <span class="stat-label">Classes</span>
+                    </div>
+
+                </div>
+
+                <div class="classes">
+                    <h3>Prediction Classes</h3>
+
+                    <div class="class-item">
+                        <span class="dot class-0"></span>
+                        Class 0
+                    </div>
+
+                    <div class="class-item">
+                        <span class="dot class-1"></span>
+                        Class 1
+                    </div>
+
+                    <div class="class-item">
+                        <span class="dot class-2"></span>
+                        Class 2
+                    </div>
+                </div>
+
+            </section>
+
+
+            <!-- Prediction Form -->
+            <section class="form-card">
+
+                <div class="form-header">
+                    <div>
+                        <h2>Wine Characteristics</h2>
+                        <p>Enter values below to generate a prediction.</p>
+                    </div>
+
+                    <button type="button"
+                            class="sample-btn"
+                            onclick="fillSample()">
+                        ✨ Autofill Sample
+                    </button>
+                </div>
+
+
+                <form id="wineForm">
+
+                    <div class="form-grid">
+
+                        <div class="input-group">
+                            <label for="alcohol">Alcohol</label>
+                            <input type="number"
+                                   id="alcohol"
+                                   step="0.01"
+                                   min="0"
+                                   placeholder="e.g. 13.20"
+                                   required>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="malic_acid">Malic Acid</label>
+                            <input type="number"
+                                   id="malic_acid"
+                                   step="0.01"
+                                   min="0"
+                                   placeholder="e.g. 1.78"
+                                   required>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="ash">Ash</label>
+                            <input type="number"
+                                   id="ash"
+                                   step="0.01"
+                                   min="0"
+                                   placeholder="e.g. 2.14"
+                                   required>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="alcalinity_of_ash">
+                                Alcalinity of Ash
+                            </label>
+                            <input type="number"
+                                   id="alcalinity_of_ash"
+                                   step="0.01"
+                                   min="0"
+                                   placeholder="e.g. 11.2"
+                                   required>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="magnesium">Magnesium</label>
+                            <input type="number"
+                                   id="magnesium"
+                                   min="0"
+                                   placeholder="e.g. 100"
+                                   required>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="total_phenols">Total Phenols</label>
+                            <input type="number"
+                                   id="total_phenols"
+                                   step="0.01"
+                                   min="0"
+                                   placeholder="e.g. 2.65"
+                                   required>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="flavanoids">Flavanoids</label>
+                            <input type="number"
+                                   id="flavanoids"
+                                   step="0.01"
+                                   min="0"
+                                   placeholder="e.g. 2.76"
+                                   required>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="nonflavanoid_phenols">
+                                Nonflavanoid Phenols
+                            </label>
+                            <input type="number"
+                                   id="nonflavanoid_phenols"
+                                   step="0.01"
+                                   min="0"
+                                   placeholder="e.g. 0.26"
+                                   required>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="proanthocyanins">
+                                Proanthocyanins
+                            </label>
+                            <input type="number"
+                                   id="proanthocyanins"
+                                   step="0.01"
+                                   min="0"
+                                   placeholder="e.g. 1.28"
+                                   required>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="color_intensity">
+                                Color Intensity
+                            </label>
+                            <input type="number"
+                                   id="color_intensity"
+                                   step="0.01"
+                                   min="0"
+                                   placeholder="e.g. 4.38"
+                                   required>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="hue">Hue</label>
+                            <input type="number"
+                                   id="hue"
+                                   step="0.01"
+                                   min="0"
+                                   placeholder="e.g. 1.05"
+                                   required>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="diluted_wines">
+                                OD280/OD315 of Diluted Wines
+                            </label>
+                            <input type="number"
+                                   id="diluted_wines"
+                                   step="0.01"
+                                   min="0"
+                                   placeholder="e.g. 3.40"
+                                   required>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="proline">Proline</label>
+                            <input type="number"
+                                   id="proline"
+                                   min="0"
+                                   placeholder="e.g. 1050"
+                                   required>
+                        </div>
+
+                    </div>
+
+
+                    <!-- Buttons -->
+                    <div class="button-row">
+
+                        <button type="submit"
+                                class="predict-btn"
+                                id="predictBtn">
+                            <span>🔍</span>
+                            Predict Wine Class
+                        </button>
+
+                        <button type="button"
+                                class="clear-btn"
+                                onclick="clearForm()">
+                            ↻ Clear All
+                        </button>
+
+                    </div>
+
+                </form>
+
+
+                <!-- Loading -->
+                <div id="loading" class="loading">
+                    <div class="spinner"></div>
+                    <p>Analyzing wine characteristics...</p>
+                </div>
+
+
+                <!-- Result -->
+                <div id="result" class="result-card">
+
+                    <div class="result-icon">✓</div>
+
+                    <div class="result-content">
+
+                        <p class="result-title">
+                            Prediction Result
+                        </p>
+
+                        <h2 id="predictionLabel">
+                            Class 0
+                        </h2>
+
+                        <div class="confidence-wrapper">
+
+                            <div class="confidence-info">
+                                <span>Confidence</span>
+                                <strong id="confidence">
+                                    0%
+                                </strong>
+                            </div>
+
+                            <div class="progress">
+                                <div id="confidenceBar"
+                                     class="progress-bar">
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="result-details">
+
+                            <div>
+                                <span>Predicted Class</span>
+                                <strong id="predictionClass">
+                                    -
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>Model Version</span>
+                                <strong id="resultVersion">
+                                    -
+                                </strong>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Error -->
+                <div id="errorBox" class="error-box"></div>
+
+            </section>
+
+        </main>
+
+
+        <!-- Footer -->
+        <footer>
+            <p>
+                Wine Classification ML System
+                <span>•</span>
+                FastAPI
+                <span>•</span>
+                Machine Learning
+            </p>
+        </footer>
 
     </div>
 
-    <div class="info-box">
-
-        <div class="card">
-            <h3>Model Accuracy</h3>
-            <p>{{ model_accuracy }}</p>
-        </div>
-
-        <div class="card">
-            <h3>Version</h3>
-            <p>{{ model_version.version }}</p>
-        </div>
-
-    </div>
-
-<form id="predictionForm">
-
-<div class="grid">
-
-<input type="number" step="any" placeholder="Alcohol" id="alcohol" required>
-
-<input type="number" step="any" placeholder="Malic Acid" id="malic_acid" required>
-
-<input type="number" step="any" placeholder="Ash" id="ash" required>
-
-<input type="number" step="any" placeholder="Alcalinity of Ash" id="alcalinity_of_ash" required>
-
-<input type="number" step="1" placeholder="Magnesium" id="magnesium" required>
-
-<input type="number" step="any" placeholder="Total Phenols" id="total_phenols" required>
-
-<input type="number" step="any" placeholder="Flavanoids" id="flavanoids" required>
-
-<input type="number" step="any" placeholder="Nonflavanoid Phenols" id="nonflavanoid_phenols" required>
-
-<input type="number" step="any" placeholder="Proanthocyanins" id="proanthocyanins" required>
-
-<input type="number" step="any" placeholder="Color Intensity" id="color_intensity" required>
-
-<input type="number" step="any" placeholder="Hue" id="hue" required>
-
-<input type="number" step="any" placeholder="Diluted Wines" id="diluted_wines" required>
-
-<input type="number" step="1" placeholder="Proline" id="proline" required>
-
-</div>
-
-<button type="submit">
-
-Predict Wine Class
-
-</button>
-
-</form>
-
-<div id="result" class="result"></div>
-
-</div>
 
 <script>
 
-document.getElementById("predictionForm").addEventListener("submit", async function(e){
+const form = document.getElementById("wineForm");
+const result = document.getElementById("result");
+const loading = document.getElementById("loading");
+const errorBox = document.getElementById("errorBox");
+const predictBtn = document.getElementById("predictBtn");
 
-e.preventDefault();
 
-const data={
+/* -----------------------------
+   AUTOFILL SAMPLE
+----------------------------- */
 
-alcohol:parseFloat(alcohol.value),
+function fillSample() {
 
-malic_acid:parseFloat(malic_acid.value),
+    document.getElementById("alcohol").value = 13.20;
+    document.getElementById("malic_acid").value = 1.78;
+    document.getElementById("ash").value = 2.14;
+    document.getElementById("alcalinity_of_ash").value = 11.2;
+    document.getElementById("magnesium").value = 100;
+    document.getElementById("total_phenols").value = 2.65;
+    document.getElementById("flavanoids").value = 2.76;
+    document.getElementById("nonflavanoid_phenols").value = 0.26;
+    document.getElementById("proanthocyanins").value = 1.28;
+    document.getElementById("color_intensity").value = 4.38;
+    document.getElementById("hue").value = 1.05;
+    document.getElementById("diluted_wines").value = 3.40;
+    document.getElementById("proline").value = 1050;
 
-ash:parseFloat(ash.value),
+    errorBox.style.display = "none";
+}
 
-alcalinity_of_ash:parseFloat(alcalinity_of_ash.value),
 
-magnesium:parseInt(magnesium.value),
+/* -----------------------------
+   CLEAR ALL
+----------------------------- */
 
-total_phenols:parseFloat(total_phenols.value),
+function clearForm() {
 
-flavanoids:parseFloat(flavanoids.value),
+    form.reset();
 
-nonflavanoid_phenols:parseFloat(nonflavanoid_phenols.value),
+    result.style.display = "none";
+    errorBox.style.display = "none";
+    loading.style.display = "none";
 
-proanthocyanins:parseFloat(proanthocyanins.value),
+    document.getElementById("confidenceBar").style.width = "0%";
+}
 
-color_intensity:parseFloat(color_intensity.value),
 
-hue:parseFloat(hue.value),
+/* -----------------------------
+   PREDICTION
+----------------------------- */
 
-diluted_wines:parseFloat(diluted_wines.value),
+form.addEventListener("submit", async function(event) {
 
-proline:parseInt(proline.value)
+    event.preventDefault();
 
-};
+    result.style.display = "none";
+    errorBox.style.display = "none";
 
-const response=await fetch("/predict",{
+    loading.style.display = "block";
 
-method:"POST",
+    predictBtn.disabled = true;
+    predictBtn.innerHTML = "⏳ Predicting...";
 
-headers:{
 
-"Content-Type":"application/json"
+    const data = {
 
-},
+        alcohol: Number(document.getElementById("alcohol").value),
 
-body:JSON.stringify(data)
+        malic_acid:
+            Number(document.getElementById("malic_acid").value),
 
-});
+        ash:
+            Number(document.getElementById("ash").value),
 
-const result=await response.json();
+        alcalinity_of_ash:
+            Number(document.getElementById("alcalinity_of_ash").value),
 
-document.getElementById("result").innerHTML=`
+        magnesium:
+            Number(document.getElementById("magnesium").value),
 
-<h2>Prediction Result</h2>
+        total_phenols:
+            Number(document.getElementById("total_phenols").value),
 
-<h3>${result.predicted_label}</h3>
+        flavanoids:
+            Number(document.getElementById("flavanoids").value),
 
-<p><strong>Confidence:</strong> ${result.confidence}%</p>
+        nonflavanoid_phenols:
+            Number(document.getElementById("nonflavanoid_phenols").value),
 
-`;
+        proanthocyanins:
+            Number(document.getElementById("proanthocyanins").value),
+
+        color_intensity:
+            Number(document.getElementById("color_intensity").value),
+
+        hue:
+            Number(document.getElementById("hue").value),
+
+        diluted_wines:
+            Number(document.getElementById("diluted_wines").value),
+
+        proline:
+            Number(document.getElementById("proline").value)
+    };
+
+
+    try {
+
+        const response = await fetch("/predict", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify(data)
+
+        });
+
+
+        const prediction = await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                prediction.detail || "Prediction failed."
+            );
+
+        }
+
+
+        /* Result values */
+
+        document.getElementById("predictionLabel").textContent =
+            prediction.predicted_label;
+
+        document.getElementById("predictionClass").textContent =
+            prediction.predicted_class;
+
+        document.getElementById("confidence").textContent =
+            prediction.confidence + "%";
+
+        document.getElementById("resultVersion").textContent =
+            prediction.model_version;
+
+
+        /* Confidence progress */
+
+        document.getElementById("confidenceBar").style.width =
+            prediction.confidence + "%";
+
+
+        loading.style.display = "none";
+
+        result.style.display = "flex";
+
+
+    } catch (error) {
+
+        loading.style.display = "none";
+
+        errorBox.textContent =
+            "⚠️ " + error.message;
+
+        errorBox.style.display = "block";
+
+    }
+
+
+    predictBtn.disabled = false;
+
+    predictBtn.innerHTML =
+        "<span>🔍</span> Predict Wine Class";
 
 });
 
